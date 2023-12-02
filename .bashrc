@@ -47,6 +47,7 @@ export BUILD_VER=Linux.$PLATFORM
 # Env setup
 #==============================================================================
 
+# kptodo don't love having to add a new entry manually for each new repo
 # Assert env var 'dev4' set to something valid; default 2 stoxxx otherwise
 if [[ ("$dev4" == "" || ("$dev4" != "stoxxx" && "$dev4" != "Parkour")) ]]
 then
@@ -58,12 +59,14 @@ then
     export dev4=Parkour
 fi
 
+#
 # setdevenv.sh requires $dev4 to be set so we know which env vars to export,
 # which parts of the code we want to skip building, 
 # and creates aliases for operating in the current tree
 #
 # This codebase isn't big enough for updating this to be worthwhile
 # source ~/.setdevenv.sh
+#
 cd $WORK/$dev4
 echo
 pwd
@@ -76,20 +79,50 @@ alias sbrc='source ~/.bashrc'
 alias envstx='export dev4=stoxxx && sbrc && cds'
 alias envpar='export dev4=Parkour && sbrc && cds'
 
-# Function which takes the filename and slaps & at the end
+# Calls function which takes the filename and slaps & at the end
 alias e='emacsRetControl'
 
-# An alias for find which will hide any "Permission Denied" error messages
-# If desired, 'fnf' will write the output to a file 'out.txt' in the $HOME
-# directory (usually /home/uname/)
-alias fn='fancyFind'
-alias fin='fancyFindInsensitive'
-alias fnf='fancyFindSave2File'
-alias finf='fancyFindSave2FileInsensitive'
+#
+# kpnotes on find alises
+#
+# An alias for find which will hide any "Permission denied" error messages
+# The idea behind these aliases is to be able to execute the find cmd with
+# different args while being able to utilize the same function (fancyFind)
+#
+# Note the fancyFind function will never search in any build directories
+#
+# 'fn' does case-sensitive matching
+alias fn='\
+export FIND_TYPE="find . -name " && \
+export FIND_ARGS=" 2>&1 | grep -iv "permission denied"" && \
+fancyFind'
+
+# 'fin' does case-insensitive matching
+alias fin='\
+export FIND_TYPE="find . -iname " && \
+export FIND_ARGS=" 2>&1 | grep -iv "permission denied"" && \
+fancyFind'
+
+# Similar to 'fn' - but redirects output to $HOME/out.txt
+alias fnf='\
+export FIND_TYPE="find . -name " && \
+export FIND_ARGS=" 2>&1 | grep -iv "permission denied"" && \
+export FIND_REDIRECT=" > $HOME/out.txt" && \
+fancyFind'
+
+# Similar to 'fin' - but redirects output to $HOME/out.txt
+alias finf='\
+export FIND_TYPE="find . -iname " && \
+export FIND_ARGS=" 2>&1 | grep -iv "permission denied"" && \
+export FIND_REDIRECT=" > $HOME/out.txt" && \
+fancyFind'
 
 # ~Lazy~
 alias wd='echo $dev4'
 alias eb='e ~/.bashrc'
+alias ee='e ~/.emacs'
+
+# kptodo unnecessary at the moment
 # alias es='e ~/.setdevenv.sh'
 
 # Killer(s)
@@ -108,27 +141,23 @@ alias gir='grep -ir --color=auto'
 # Gre~p (w/ excludes)
 CS_GREP_EXCLUDES=--exclude-dir={node_modules,build.js}
 
-# Search most useful file extensions
-alias ge="grep -r --color=auto -I $CS_GREP_EXCLUDES \
+# Most common things
+alias ge="gr --color=auto -I $CS_GREP_EXCLUDES \
 --include=*.{[CHch],cpp,hpp,cxx,hxx,cc,java,ts,js,html}"
-alias gie="grep -ir --color=auto -I $CS_GREP_EXCLUDES \
+alias gie="gir --color=auto -I $CS_GREP_EXCLUDES \
 --include=*.{[CHch],cpp,hpp,cxx,hxx,cc,java,ts,js,html}"
 
 # Header files
-alias gh="grep -r -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
-alias gih="grep -ir -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
+alias ghr="gr -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
+alias gih="gir -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
 
 # Source files
-alias gs="grep -r -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
-alias gis="grep -ir -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
+alias gs="gr -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
+alias gis="gir -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
 
 # Makefiles
-alias gm="grep -r -I $CS_GREP_EXCLUDES --include=Makefile*"
-alias gim="grep -ir -I $CS_GREP_EXCLUDES --include=Makefile*"
-
-# *RC files
-alias grc="grep -r -I $CS_GREP_EXCLUDES --include=*RC*"
-alias girc="grep -ir -I $CS_GREP_EXCLUDES --include=*RC*"
+alias gm="gr -I $CS_GREP_EXCLUDES --include=Makefile*"
+alias gim="g -I $CS_GREP_EXCLUDES --include=Makefile*"
 
 # Load webcam driver (requires root)
 alias loadwebcam='modprobe -v stkwebcam'
@@ -148,7 +177,7 @@ cd $WORK/stoxxx && echo Running: git pull stoxxx && sp && echo && \
 cd $WORK/Parkour && echo Running: git pull Parkour && sp && echo && \
 cd $WORK && echo Done updating all trees! && echo'
 
-# Make ('lscpu' reports 4 cpus; 1 thread / core on this vm)
+# Make ('lscpu' reports 4 cpus; hyperthreading disabled in host bios)
 alias m='make'
 alias mb='make brief'
 alias m4='make -j4'
@@ -167,7 +196,7 @@ alias cds='cd $WORK/$dev4'
 # alias cdb='cd /home/puricelli/$dev4/csl/bin/Linux.x86_64'
 
 #==============================================================================
-# Print the emacs keybinds to the console
+# Print some emacs keybinds to the console
 #==============================================================================
 alias ek='echo && \
 echo Custom emacs keybinds... && \
@@ -185,6 +214,7 @@ echo Copy word under cursor: C-o && echo'
 
 #==============================================================================
 # Kill process with given name
+# Usage: 'smash <appName>'
 #==============================================================================
 smash()
 {
@@ -194,7 +224,7 @@ smash()
         echo "Found the following processes:"
         for pid in "${T_PIDS[@]}"; do
             echo "$pid" "$(ps -p "$pid" -o comm= | awk -F'/' '{print $NF}')" |
-            column -t
+                column -t
         done
         if (yorn.ask "rly?"); then
             for pid in "${T_PIDS[@]}"; do
@@ -221,17 +251,17 @@ smash()
 yorn.ask()
 {
     read -p "$@ [Y/n]: " RESP &&
-    local YORN_RESP="$(echo "${RESP:0:1}" | grep -i "[YN]")"
+        local YORN_RESP="$(echo "${RESP:0:1}" | grep -i "[YN]")"
     while [[ -z "$YORN_RESP" ]]; do
         echo "Please respond only with: y or n"
         read -p "$@ [Y/n]: " RESP &&
-        local YORN_RESP="$(echo "${RESP:0:1}" | grep -i "[YN]")"
+            local YORN_RESP="$(echo "${RESP:0:1}" | grep -i "[YN]")"
     done
     [[ "$YORN_RESP" == 'Y' || "$YORN_RESP" == 'y' ]] && return 0 || return 1
 }
 
 #==============================================================================
-# Start emacs and add '&' at the end
+# Start emacs and return control to the shell
 #==============================================================================
 emacsRetControl()
 {
@@ -239,37 +269,21 @@ emacsRetControl()
 }
 
 #==============================================================================
-# Function to hide all 'Permission denied' error messages from find
+# Function to hide all 'Permission denied' error messages from find,
+# provide the option to find using case sensitive or case insensitive matching,
+# and optionally redirect the output of find to $HOME/out.txt
+#
+# Note: always skips the build direcories ('Linux.x86_64/*.d' and *.o matches)
 #==============================================================================
 fancyFind()
 {
-    find . -name $1 2>&1 | grep -iv "permission denied"
-}
+    echo
+    echo "Running command:"
+    echo "$FIND_TYPE" $1 "$FIND_ARGS" "$FIND_REDIRECT"'| grep -iv Linux'
+    echo
+    
+    eval "$FIND_TYPE" $1 "$FIND_ARGS" "$FIND_REDIRECT" | grep -iv Linux
 
-#==============================================================================
-# Function to hide all 'Permission denied' error messages from find
-# This is the case-insensitive version
-#==============================================================================
-fancyFindInsensitive()
-{
-    find . -iname $1 2>&1 | grep -iv "permission denied"
-}
-
-#==============================================================================
-# Function to hide all 'Permission denied' error messages from find
-# This will save all of the output to a file at $HOME/out.txt
-#==============================================================================
-fancyFindSave2File()
-{
-    find . -name $1 2>&1 | grep -iv "permission denied" > $HOME/out.txt
-}
-
-#==============================================================================
-# Function to hide all 'Permission denied' error messages from find
-# This is the case-insensitive version
-# This will save all of the output to a file at $HOME/out.txt
-#==============================================================================
-fancyFindSave2FileInsensitive()
-{
-    find . -iname $1 2>&1 | grep -iv "permission denied" > $HOME/out.txt
+    # Reset so we don't try and redirect the output when using 'fn' or 'fin'
+    export FIND_REDIRECT=
 }
