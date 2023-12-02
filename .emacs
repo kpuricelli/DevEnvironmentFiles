@@ -20,6 +20,9 @@
 ;;(global-set-key [f3] 'cscope-find-global-definition-no-prompting)
 ;;(global-set-key [f4] 'cscope-find-functions-calling-this-function)
 
+;; Get emacs to be quiet
+(setq ring-bell-function 'ignore)
+
 ;; Don't show a splash screen
 (setq inhibit-startup-message t)
 (setq initial-scratch-message "")
@@ -127,7 +130,7 @@
 (global-set-key [C-tab] 'other-window)
 (global-set-key "\M-s" 'ispell-word)
 
-;; Lazy-boi way to avoid typing std::cout (Meta-c)
+;; Lazy-boi way to avoid typing std::cout
 (defun coutMacro ()
   (interactive)
   (insert "std::cout <<  << std::endl;")
