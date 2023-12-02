@@ -43,20 +43,31 @@ export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
 export PLATFORM=`uname -m`
 export BUILD_VER=Linux.$PLATFORM
 
+# kptodo
+# Work in progress but i tend to avoid hardcoding strings when possible
+export REPO_DEVENV=DevEnvironmentFiles
+export REPO_STOCKS=stoxxx
+export REPO_PARKOUR=Parkour
+
 #==============================================================================
 # Env setup
 #==============================================================================
 
 # kptodo don't love having to add a new entry manually for each new repo
 # Assert env var 'dev4' set to something valid; default 2 stoxxx otherwise
-if [[ ("$dev4" == "" || ("$dev4" != "stoxxx" && "$dev4" != "Parkour")) ]]
+if [[ ("$dev4" == "" || \
+           ("$dev4" != "$REPO_DEVENV" && "$dev4" != "$REPO_STOCKS") \
+               && "$dev4" != "$REPO_PARKOUR") ]]
 then
     echo ""
-    echo "Environment variable 'dev4' not set, defaulting to stoxxx"
-    export dev4=stoxxx
-elif [ "$dev4" == "Parkour" ]
+    echo "Environment variable 'dev4' not set, defaulting to $REPO_DEVENV"
+    export dev4=$REPO_DEVENV
+elif [ "$dev4" == "$REPO_PARKOUR" ]
 then
-    export dev4=Parkour
+    export dev4=$REPO_PARKOUR
+elif [ "$dev4" == "$REPO_STOCKS" ]
+then
+    export dev4=$REPO_STOCKS
 fi
 
 #
@@ -64,7 +75,7 @@ fi
 # which parts of the code we want to skip building, 
 # and creates aliases for operating in the current tree
 #
-# This codebase isn't big enough for updating this to be worthwhile
+# These codebases arent big enough yet for updating this to be worthwhile
 # source ~/.setdevenv.sh
 #
 cd $WORK/$dev4
@@ -76,8 +87,9 @@ echo
 # Common aliases
 #==============================================================================
 alias sbrc='source ~/.bashrc'
-alias envstx='export dev4=stoxxx && sbrc && cds'
-alias envpar='export dev4=Parkour && sbrc && cds'
+alias envde='export dev4=$REPO_DEVENV && sbrc && cds'
+alias envstx='export dev4=$REPO_STOCKS && sbrc && cds'
+alias envpar='export dev4=$REPO_PARKOUR && sbrc && cds'
 
 # Calls function which takes the filename and slaps & at the end
 alias e='emacsRetControl'
@@ -121,6 +133,13 @@ fancyFind'
 alias wd='echo $dev4'
 alias eb='e ~/.bashrc'
 alias ee='e ~/.emacs'
+alias ys='yum search'
+alias yi='yum install'
+alias yu='yum update'
+
+# Since this is under version control now, i can't be bothered to move it
+# from the repo to ~
+alias cpbrc='cp $WORK/DevEnvironmentFiles/.bashrc ~'
 
 # kptodo unnecessary at the moment
 # alias es='e ~/.setdevenv.sh'
@@ -173,9 +192,9 @@ alias sp='git pull'
 # Lazy-boi alias to update all repos
 # kptodo will need to manually add any newly cloned repos here
 alias spall='echo && \
-cd $WORK/stoxxx && echo Running: git pull stoxxx && sp && echo && \
-cd $WORK/Parkour && echo Running: git pull Parkour && sp && echo && \
-cd $WORK && echo Done updating all trees! && echo'
+cd $WORK/$REPO_STOCKS && echo Running: git pull $REPO_STOCKS && sp && echo && \
+cd $WORK/$REPO_PARKOUR && echo Running: git pull $REPO_PARKOUR && sp && \
+echo && cd $WORK && echo Done updating all trees! && echo'
 
 # Make ('lscpu' reports 4 cpus; hyperthreading disabled in host bios)
 alias m='make'
