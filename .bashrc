@@ -46,7 +46,7 @@ export BUILD_VER=Linux.$PLATFORM
 # kptodo
 # Work in progress but i tend to avoid hardcoding strings when possible
 export REPO_DEVENV=DevEnvironmentFiles
-export REPO_STOCKS=stoxxx
+export REPO_STOCKS=StockDataRetriever
 export REPO_PARKOUR=Parkour
 
 #==============================================================================
@@ -54,7 +54,7 @@ export REPO_PARKOUR=Parkour
 #==============================================================================
 
 # kptodo don't love having to add a new entry manually for each new repo
-# Assert env var 'dev4' set to something valid; default 2 stoxxx otherwise
+# Assert env var 'dev4' set to something valid; default to dev env otherwise
 if [[ ("$dev4" == "" || \
            ("$dev4" != "$REPO_DEVENV" && "$dev4" != "$REPO_STOCKS") \
                && "$dev4" != "$REPO_PARKOUR") ]]
