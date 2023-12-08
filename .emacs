@@ -47,64 +47,25 @@
 
 ;; Loads: highlight-symbol.el, rainbow-delimiters.el, real-auto-save.el, and
 ;; typescript-mode.el
-;; kptodo uncomment all these ~ forgot to grab the lisp @_@
-;; (add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; kptodo uncomment
 ;; Highlight-symbol.el init
-;;(require 'highlight-symbol)
-;;(add-hook 'c++-mode-hook 'highlight-symbol-mode)
-;;(add-hook 'java-mode-hook 'highlight-symbol-mode)
-;;(add-hook 'makefile-mode-hook 'highlight-symbol-mode)
-;;(add-hook 'sgml-mode-hook 'highlight-symbol-mode) ;; (4xml)
-;;(add-hook 'typescript-mode-hook 'highlight-symbol-mode)
-;;(add-hook 'javascript-mode-hook 'highlight-symbol-mode)
-;;(add-hook 'nxml-mode-hook 'highlight-symbol-mode)
-;;(setq highlight-symbol-idle-delay 1.0)
-
-;; Python indent 2 spaces
-(add-hook 'python-mode-hook '(lambda () 
- (setq python-indent 2)))
+(require 'highlight-symbol)
+(add-hook 'c++-mode-hook 'highlight-symbol-mode)
+(add-hook 'makefile-mode-hook 'highlight-symbol-mode)
+(add-hook 'sgml-mode-hook 'highlight-symbol-mode) ;; (4xml)
+(add-hook 'typescript-mode-hook 'highlight-symbol-mode)
+(add-hook 'javascript-mode-hook 'highlight-symbol-mode)
+(add-hook 'nxml-mode-hook 'highlight-symbol-mode)
+(setq highlight-symbol-idle-delay 1.0)
 
 ;; Make sure to still display the line number in buffers with very long lines
 (setq line-number-display-limit-width 512)
 
-;; kptodo uncomment
 ;; Rainbow highlighting
-;; Highlight nested parentheses, brackets, and braces according to their depth.
-;; (require 'rainbow-delimiters)
-;; (add-hook 'c++-mode-hook 'rainbow-delimiters-mode)
-
-;; Emacs built-in compiler stuff
-(global-set-key (kbd "<f5>") 'compile)
-(global-set-key (kbd "<f6>") 'next-error)
-
-;; Make it so we don't have to hit enter to compile
-(setq compilation-read-command nil)
-
-;; Don't open the compile window
-(defun my-compile-finish (buffer outstr)
-  (unless (string-match "finished" outstr)
-    (switch-to-buffer-other-window buffer))
-  t)
-(setq compilation-finish-functions 'my-compile-finish)
-(require 'cl)
-(defadvice compilation-start
-  (around inhibit-display
-      (command &optional mode name-function highlight-regexp)) 
-  (if (not (string-match "^\\(find\\|grep\\)" command))
-      ;; kpnote changed from 'flet' to 'cl-flet'
-      ;; (flet is obsolete in emacs ver 26.1)
-      (cl-flet ((display-buffer)
-         (set-window-point)
-         (goto-char)) 
-    (fset 'display-buffer 'ignore)
-    (fset 'goto-char 'ignore)
-    (fset 'set-window-point 'ignore)
-    (save-window-excursion 
-      ad-do-it))
-    ad-do-it))
-(ad-activate 'compilation-start)
+;; Highlight nested parentheses, brackets, and braces according to their depth
+(require 'rainbow-delimiters)
+(add-hook 'c++-mode-hook 'rainbow-delimiters-mode)
 
 ;; Open read only
 (defun command-line-find-file-read-only (switch)
