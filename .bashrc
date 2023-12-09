@@ -211,8 +211,12 @@ alias cdn='cd $HOME/notes'
 # Aliases depending on env var 'dev4'
 alias cds='cd $WORK/$dev4'
 
-# kptodo for when i eventually move everything in a build directory
-# alias cdb='cd /home/puricelli/$dev4/csl/bin/Linux.x86_64'
+# kptodo - make un-specific to stock repo
+alias cdsrc='cds && cd src'
+alias cdt='cds && cd tests'
+alias cdb='cds && cd bin/Linux.x86_64'
+alias rt='cdb && ./RunTests'
+alias rp='cdb && ./StockDataRetriever'
 
 #==============================================================================
 # Print some emacs keybinds to the console
