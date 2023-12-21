@@ -12,10 +12,9 @@ xset b off
 # kptodo-s
 #==============================================================================
 #
-# Function to update all local trees from the repo (and (optionally) build them)
-# svn update all trees part done, would it actually be useful to make all?
-#
 # Change the "bash-n.n$" text to something more useful, maybe $dev4
+#
+# Search kptodo there's always new ideas being added in random places
 #
 #==============================================================================
 # kpnotes on bash globbing w/ grep
@@ -43,17 +42,30 @@ export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
 export PLATFORM=`uname -m`
 export BUILD_VER=Linux.$PLATFORM
 
-# kptodo
-# Work in progress but i tend to avoid hardcoding strings when possible
+# Current git repos
 export REPO_DEVENV=DevEnvironmentFiles
 export REPO_STOCKS=StockDataRetriever
 export REPO_PARKOUR=Parkour
+
+#
+# kpnote
+#
+# This is specific to the stocks project and used in the Makefile to determine
+# which compiler flags to pass to g++
+#
+# The options are:
+# none: CC_DEBUG := $(DebugFlags); CC_OPTIMIZE :=
+# both: CC_DEBUG := $(DebugFlags); CC_OPTIMIZE := $(OptFlags)
+# all : CC_DEBUG :=              ; CC_OPTIMIZE := $(OptFlags)
+export STX_OPTIMIZE=none
 
 #==============================================================================
 # Env setup
 #==============================================================================
 
-# kptodo don't love having to add a new entry manually for each new repo
+# kptodo
+# Don't love having to add a new entry manually for each new repo
+
 # Assert env var 'dev4' set to something valid; default to dev env otherwise
 if [[ ("$dev4" == "" || \
            ("$dev4" != "$REPO_DEVENV" && "$dev4" != "$REPO_STOCKS") \
@@ -144,9 +156,6 @@ alias yu='yum update'
 # from the repo to ~
 alias cpbrc='cp $WORK/DevEnvironmentFiles/.bashrc ~'
 
-# kptodo unnecessary at the moment
-# alias es='e ~/.setdevenv.sh'
-
 # Killer(s)
 alias k='kill'
 alias xk='xkill'
@@ -193,7 +202,6 @@ alias sr='git checkout'
 alias sp='git pull'
 
 # Lazy-boi alias to update all repos
-# kptodo will need to manually add any newly cloned repos here
 alias spall='echo && \
 cd $WORK/$REPO_STOCKS && echo Running: git pull $REPO_STOCKS && sp && echo && \
 cd $WORK/$REPO_PARKOUR && echo Running: git pull $REPO_PARKOUR && sp && \
@@ -214,7 +222,8 @@ alias cdn='cd $HOME/notes'
 # Aliases depending on env var 'dev4'
 alias cds='cd $WORK/$dev4'
 
-# kptodo - make un-specific to stock repo
+# kptodo
+# make un-specific to stock repo
 alias cdsrc='cds && cd src'
 alias cdt='cds && cd tests'
 alias cdb='cds && cd bin/Linux.x86_64'
