@@ -60,14 +60,17 @@ if [[ ("$dev4" == "" || \
                && "$dev4" != "$REPO_PARKOUR") ]]
 then
     echo ""
-    echo "Environment variable 'dev4' not set, defaulting to $REPO_DEVENV"
-    export dev4=$REPO_DEVENV
+    echo "Environment variable 'dev4' not set, defaulting to $REPO_STOCKS"
+    export dev4=$REPO_STOCKS
 elif [ "$dev4" == "$REPO_PARKOUR" ]
 then
     export dev4=$REPO_PARKOUR
 elif [ "$dev4" == "$REPO_STOCKS" ]
 then
     export dev4=$REPO_STOCKS
+elif [ "$dev4" == "$REPO_DEVENV" ]
+then
+    export dev4=$REPO_DEVENV
 fi
 
 #
@@ -87,7 +90,7 @@ echo
 # Common aliases
 #==============================================================================
 alias sbrc='source ~/.bashrc'
-alias envde='export dev4=$REPO_DEVENV && sbrc && cds'
+alias envdev='export dev4=$REPO_DEVENV && sbrc && cds'
 alias envstx='export dev4=$REPO_STOCKS && sbrc && cds'
 alias envpar='export dev4=$REPO_PARKOUR && sbrc && cds'
 
