@@ -5,9 +5,6 @@ if [ -z "$PS1" ]; then
     return
 fi
 
-# Quiet pls
-xset b off
-
 #==============================================================================
 # kptodo-s
 #==============================================================================
@@ -34,13 +31,24 @@ xset b off
 hostname="`hostname | sed 's/\..*//'`"
 export HOST=$hostname
 export HOSTNAME=$hostname
-export PATH=$PATH:/home/puricelli/bin
-export WORK=/home/puricelli/work/
-export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
-export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
-
 export PLATFORM=`uname -m`
-export BUILD_VER=Linux.$PLATFORM
+
+# Mac-specific
+if [[ "$OSTYPE" == "darwin22" ]]
+then
+    export WORK=/Users/kp/work
+    export BUILD_VER=osx.$PLATFORM
+# Otherwise, assume Linux
+else
+    export PATH=$PATH:/home/puricelli/bin
+    export WORK=/home/puricelli/work/
+    export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
+    export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
+    export BUILD_VER=Linux.$PLATFORM
+
+    # Quiet pls
+    xset b off
+fi
 
 # Current git repos
 export REPO_DEVENV=DevEnvironmentFiles
