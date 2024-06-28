@@ -41,7 +41,7 @@ then
 # Otherwise, assume Linux
 else
     export PATH=$PATH:/home/puricelli/bin
-    export WORK=/home/puricelli/work/
+    export WORK=/home/puricelli/work
     export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
     export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
     export BUILD_VER=Linux.$PLATFORM
@@ -191,7 +191,7 @@ alias ghr="gr -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
 alias gih="gir -I $CS_GREP_EXCLUDES --include=*.{H,h,hpp,hxx}"
 
 # Source files
-alias gs="gr -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
+alias gsrc="gr -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
 alias gis="gir -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
 
 # Makefiles
@@ -201,13 +201,13 @@ alias gim="g -I $CS_GREP_EXCLUDES --include=Makefile*"
 # Load webcam driver (requires root)
 alias loadwebcam='modprobe -v stkwebcam'
 
-# what can i say...i use svn at work and git at home (insert shrug emoji)
 # git
-alias sst='git status'
-alias sc='git commit'
-alias sd='git diff'
-alias sr='git checkout'
-alias sp='git pull'
+alias ga='git add'
+alias gs='git status'
+alias gc='git commit'
+alias gd='git diff'
+alias gc='git checkout'
+alias gp='git pull'
 
 # Lazy-boi alias to update all repos
 alias spall='echo && \
