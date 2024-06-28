@@ -38,6 +38,8 @@ if [[ "$OSTYPE" == "darwin22" ]]
 then
     export WORK=/Users/kp/work
     export BUILD_VER=osx.$PLATFORM
+    #alias e='/Applications/Emacs.app/Contents/MacOS/emacsRetControlOSX '
+    alias e='emacsRetControlOSX'
 # Otherwise, assume Linux
 else
     export PATH=$PATH:/home/puricelli/bin
@@ -45,6 +47,9 @@ else
     export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
     export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
     export BUILD_VER=Linux.$PLATFORM
+
+    # Calls function which takes the filename and slaps & at the end
+    alias e='emacsRetControl'
 
     # Quiet pls
     xset b off
@@ -113,9 +118,6 @@ alias sbrc='source ~/.bashrc'
 alias envdev='export dev4=$REPO_DEVENV && sbrc && cds'
 alias envstx='export dev4=$REPO_STOCKS && sbrc && cds'
 alias envpar='export dev4=$REPO_PARKOUR && sbrc && cds'
-
-# Calls function which takes the filename and slaps & at the end
-alias e='emacsRetControl'
 
 #
 # kpnotes on find alises
@@ -310,6 +312,16 @@ emacsRetControl()
 {
     emacs $1 &
 }
+
+#==============================================================================
+# Start emacs and return control to the shell
+#==============================================================================
+emacsRetControlOSX()
+{
+    # For some reason need the full path
+    /Applications/Emacs.app/Contents/MacOS/Emacs $1 &
+}
+
 
 #==============================================================================
 # Function to hide all 'Permission denied' error messages from find,
