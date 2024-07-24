@@ -31,14 +31,15 @@ fi
 hostname="`hostname | sed 's/\..*//'`"
 export HOST=$hostname
 export HOSTNAME=$hostname
-export PLATFORM=`uname -m`
+export PLATFORM=`uname -s`
+export ARCH=`uname -m`
 
 # Mac-specific
 if [[ "$OSTYPE" == "darwin22" ]]
 then
+    # kptodo is there anything i need from $PATH?
     export WORK=/Users/kp/work
-    export BUILD_VER=osx.$PLATFORM
-    #alias e='/Applications/Emacs.app/Contents/MacOS/emacsRetControlOSX '
+    export BUILD_VER=$PLATFORM.$ARCH
     alias e='emacsRetControlOSX'
 # Otherwise, assume Linux
 else
@@ -46,7 +47,10 @@ else
     export WORK=/home/puricelli/work
     export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
     export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
-    export BUILD_VER=Linux.$PLATFORM
+
+    # kptodo test this / if equal, move outside if / else
+    export BUILD_VER=$PLATFORM.$ARCH
+    #export BUILD_VER=Linux.$PLATFORM
 
     # Calls function which takes the filename and slaps & at the end
     alias e='emacsRetControl'
@@ -236,7 +240,9 @@ alias cds='cd $WORK/$dev4'
 # make un-specific to stock repo
 alias cdsrc='cds && cd src'
 alias cdt='cds && cd tests'
-alias cdb='cds && cd bin/Linux.x86_64'
+
+# kptodo fix this to not be version dep
+alias cdb='cds && cd bin/$BUILD_VER'
 alias rt='cdb && ./RunTests'
 alias rp='cdb && ./StockDataRetriever'
 
