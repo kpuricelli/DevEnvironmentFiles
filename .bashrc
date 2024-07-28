@@ -75,6 +75,10 @@ export REPO_PARKOUR=Parkour
 # both: CC_DEBUG := $(DebugFlags); CC_OPTIMIZE := $(OptFlags)
 # all : CC_DEBUG :=              ; CC_OPTIMIZE := $(OptFlags)
 export STX_OPTIMIZE=none
+alias stxopt='echo $STX_OPTIMIZE'
+alias stxoptoff='export STX_OPTIMIZE=none'
+alias stxoptmax='export STX_OPTIMIZE=all'
+alias stxoptboth='export STX_OPTIMIZE=both'
 
 #==============================================================================
 # Env setup
@@ -221,10 +225,9 @@ cd $WORK/$REPO_STOCKS && echo Running: git pull $REPO_STOCKS && sp && echo && \
 cd $WORK/$REPO_PARKOUR && echo Running: git pull $REPO_PARKOUR && sp && \
 echo && cd $WORK && echo Done updating all trees! && echo'
 
-# Make ('lscpu' reports 4 cpus; hyperthreading disabled in host bios)
+# Make ('lscpu' reports 20 cpus on vsmooth; hyperthreading enabled)
 alias m='make'
-alias mb='make brief'
-alias m4='make -j4'
+alias m20='make -j20'
 alias mc='make clean'
 
 # C~d
@@ -235,13 +238,10 @@ alias cdn='cd $HOME/notes'
 
 # Aliases depending on env var 'dev4'
 alias cds='cd $WORK/$dev4'
-
-# kptodo
-# make un-specific to stock repo
 alias cdsrc='cds && cd src'
 alias cdt='cds && cd tests'
 
-# kptodo fix this to not be version dep
+# kptodo fix this to be platform independent
 alias cdb='cds && cd bin/$BUILD_VER'
 alias rt='cdb && ./RunTests'
 alias rp='cdb && ./StockDataRetriever'
@@ -321,20 +321,21 @@ emacsRetControl()
 
 #==============================================================================
 # Start emacs and return control to the shell
+# Mac / OSX needs the full path
 #==============================================================================
 emacsRetControlOSX()
 {
-    # For some reason need the full path
     /Applications/Emacs.app/Contents/MacOS/Emacs $1 &
 }
 
-
 #==============================================================================
+# kptodo make this platform independent
+#
 # Function to hide all 'Permission denied' error messages from find,
 # provide the option to find using case sensitive or case insensitive matching,
 # and optionally redirect the output of find to $HOME/out.txt
 #
-# Note: always skips the build direcories ('Linux.x86_64/*.d' and *.o matches)
+# Note: always skips the build directories ('Linux.x86_64/*.d' and *.o matches)
 #==============================================================================
 fancyFind()
 {
