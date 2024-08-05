@@ -33,30 +33,25 @@ export HOST=$hostname
 export HOSTNAME=$hostname
 export PLATFORM=`uname -s`
 export ARCH=`uname -m`
+export BUILD_VER=$PLATFORM.$ARCH
 
 # Mac-specific
 if [[ "$OSTYPE" == "darwin22" ]]
 then
-    # kptodo is there anything i need from $PATH?
+    # kptodo is there anything needed to export into $PATH?
     export WORK=/Users/kp/work
-    export BUILD_VER=$PLATFORM.$ARCH
+
+    # OSX-specific version since osx loves absolute paths
     alias e='emacsRetControlOSX'
+    
 # Otherwise, assume Linux
 else
     export PATH=$PATH:/home/puricelli/bin
     export WORK=/home/puricelli/work
     export LD_LIBRARY_PATH=/opt/public/lib:/usr/dt/lib:/usr/lib64:/usr/lib/
-    export MANPATH=/usr/share/man:/opt/public/man:/usr/man:/usr/X11R6/man
-
-    # kptodo test this / if equal, move outside if / else
-    export BUILD_VER=$PLATFORM.$ARCH
-    #export BUILD_VER=Linux.$PLATFORM
 
     # Calls function which takes the filename and slaps & at the end
     alias e='emacsRetControl'
-
-    # Quiet pls
-    xset b off
 fi
 
 # Current git repos
@@ -106,18 +101,18 @@ then
     export dev4=$REPO_DEVENV
 fi
 
-#
-# setdevenv.sh requires $dev4 to be set so we know which env vars to export,
-# which parts of the code we want to skip building, 
-# and creates aliases for operating in the current tree
-#
-# These codebases arent big enough yet for updating this to be worthwhile
-# source ~/.setdevenv.sh
-#
+# Print the current path
 cd $WORK/$dev4
 echo
 pwd
 echo
+
+#==============================================================================
+# 12data api keys hidden in a non-public github file
+#==============================================================================
+alias usekey1='export USEAPIKEY1='yes' && export USEAPIKEY2='no''
+alias usekey2='export USEAPIKEY1='no' && export USEAPIKEY2='yes''
+source ~/.setdevenv.sh
 
 #==============================================================================
 # Common aliases
@@ -130,7 +125,9 @@ alias envpar='export dev4=$REPO_PARKOUR && sbrc && cds'
 #
 # kpnotes on find alises
 #
-# An alias for find which will hide any "Permission denied" error messages
+# An alias for find which will hide the "Permission denied" error messages
+# when trying to find from a high level directory (like "/")
+#
 # The idea behind these aliases is to be able to execute the find cmd with
 # different args while being able to utilize the same function (fancyFind)
 #
@@ -176,6 +173,7 @@ alias cpbrc='cp $WORK/DevEnvironmentFiles/.bashrc ~'
 
 # Killer(s)
 alias k='kill'
+alias k9='kill -9'
 alias xk='xkill'
 
 # Colors are pretty
@@ -187,7 +185,7 @@ alias g='grep --color=auto'
 alias gr='grep -r --color=auto'
 alias gir='grep -ir --color=auto'
 
-# Gre~p (w/ excludes)
+# Gre~p never search inside node or js stuff
 CS_GREP_EXCLUDES=--exclude-dir={node_modules,build.js}
 
 # Most common things
@@ -208,9 +206,6 @@ alias gis="gir -I $CS_GREP_EXCLUDES --include=*.{C,c,cpp,cxx,cc}"
 alias gm="gr -I $CS_GREP_EXCLUDES --include=Makefile*"
 alias gim="g -I $CS_GREP_EXCLUDES --include=Makefile*"
 
-# Load webcam driver (requires root)
-alias loadwebcam='modprobe -v stkwebcam'
-
 # git
 alias ga='git add'
 alias gs='git status'
@@ -225,6 +220,7 @@ cd $WORK/$REPO_STOCKS && echo Running: git pull $REPO_STOCKS && sp && echo && \
 cd $WORK/$REPO_PARKOUR && echo Running: git pull $REPO_PARKOUR && sp && \
 echo && cd $WORK && echo Done updating all trees! && echo'
 
+# kptodo how many cores on the osx laptop?
 # Make ('lscpu' reports 20 cpus on vsmooth; hyperthreading enabled)
 alias m='make'
 alias m20='make -j20'
@@ -241,7 +237,8 @@ alias cds='cd $WORK/$dev4'
 alias cdsrc='cds && cd src'
 alias cdt='cds && cd tests'
 
-# kptodo fix this to be platform independent
+# kptodo might be nice to have this alias figure out where the current dir is,
+# as to run the target from the current directory
 alias cdb='cds && cd bin/$BUILD_VER'
 alias rt='cdb && ./RunTests'
 alias rp='cdb && ./StockDataRetriever'
@@ -321,7 +318,7 @@ emacsRetControl()
 
 #==============================================================================
 # Start emacs and return control to the shell
-# Mac / OSX needs the full path
+# OSX needs the full path
 #==============================================================================
 emacsRetControlOSX()
 {
